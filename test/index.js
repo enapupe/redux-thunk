@@ -94,6 +94,28 @@ describe('thunk middleware', () => {
     });
   });
 
+  describe('withState', () => {
+    it('must pass the fourth argument', done => {
+      const nadaIfEmpty = (getState) => {
+        const state = getState()
+        if (!state) {
+          return 'nada'
+        }
+        return state
+      }
+      thunkMiddleware.withExtraArgument(undefined, nadaIfEmpty)({
+        dispatch: doDispatch,
+        getState: doGetState,
+      })()((dispatch, getState, arg, extra) => {
+        chai.assert.strictEqual(dispatch, doDispatch);
+        chai.assert.strictEqual(getState, doGetState);
+        chai.assert.strictEqual(arg, undefined);
+        chai.assert.strictEqual(extra, 'nada');
+        done();
+      });
+    });
+  });
+
   describe('TypeScript definitions', function test() {
     this.timeout(0);
 
